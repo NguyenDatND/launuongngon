@@ -1,0 +1,59 @@
+# Node / TypeScript
+node_modules
+dist
+build
+.turbo
+.next
+.nuxt
+.cache
+
+# BMA-D
+_bmad
+
+# BMA-D input
+_bmad-input
+
+# cursor
+.cursor
+
+#pmpm store
+.pnpm-store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor / OS files
+.DS_Store
+.history
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+Thumbs.db
+
+# Coverage / test output
+coverage
+.nyc_output
+jest-html-reporters-*.html
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+# Frontend build artifacts
+out
+.vercel
+
