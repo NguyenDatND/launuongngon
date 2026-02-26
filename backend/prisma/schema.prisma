@@ -27,16 +27,32 @@ model Branch {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String   @map("password_hash")
+  id           String         @id @default(uuid())
+  email        String         @unique
+  passwordHash String         @map("password_hash")
   name         String
-  role         UserRole @default(staff)
-  branchId     String   @map("branch_id")
-  branch       Branch   @relation(fields: [branchId], references: [id])
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  role         UserRole       @default(staff)
+  branchId     String         @map("branch_id")
+  branch       Branch         @relation(fields: [branchId], references: [id])
+  isActive     Boolean        @default(true) @map("is_active")
+  refreshTokens RefreshToken[]
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
 
   @@index([branchId], name: "idx_users_branch_id")
   @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([userId], name: "idx_refresh_tokens_user_id")
+  @@index([tokenHash], name: "idx_refresh_tokens_token_hash")
+  @@map("refresh_tokens")
 }

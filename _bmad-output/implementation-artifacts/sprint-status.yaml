@@ -43,7 +43,7 @@ story_location: /Users/teavillageboy/Code/LauNuongNgon/_bmad-output/implementati
 development_status:
   epic-1: in-progress
   1-1-project-foundation-core-infrastructure: done
-  5-1-staff-authentication-role-management: ready-for-dev
+  5-1-staff-authentication-role-management: done
   5-2-branch-table-configuration: ready-for-dev
   1-2-branch-availability-time-slot-browsing: backlog
   1-3-table-booking-submission-confirmation: backlog

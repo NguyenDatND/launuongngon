@@ -1,6 +1,6 @@
 # Story 5.1: Staff Authentication & Role Management
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -22,35 +22,35 @@ So that each team member can log in with the correct permissions for their job.
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Install dependencies** (all ACs)
-  - [ ] `pnpm --filter backend add @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt`
-  - [ ] `pnpm --filter backend add -D @types/passport-jwt @types/bcrypt`
-- [ ] **Task 2: Prisma – extend User, add RefreshToken** (AC: 4, 5)
-  - [ ] Add `isActive Boolean @default(true) @map("is_active")` to `User` model
-  - [ ] Add `refreshTokens RefreshToken[]` relation to `User`
-  - [ ] Create `RefreshToken` model (see schema below)
-  - [ ] Run `npx prisma migrate dev --name add_auth_fields`
-- [ ] **Task 3: Auth module – login** (AC: 2, 3)
-  - [ ] `POST /api/auth/login` — validate email+password (BCrypt compare). If `isActive === false`: return 401 `INVALID_CREDENTIALS`. If wrong password: return 401 `INVALID_CREDENTIALS`, message exactly `"Invalid email or password."`. If valid: issue access token (JWT, 15 min) + refresh token (UUID, 7 days), store refresh token hash in DB, set refresh token in **httpOnly cookie** (`refreshToken`, `sameSite: strict`, `httpOnly: true`, `secure: process.env.NODE_ENV === 'production'`), return `{ "data": { "accessToken", "expiresIn", "user": { id, email, name, role, branchId } } }` in body.
-- [ ] **Task 4: Auth module – refresh** (AC: 5)
-  - [ ] `POST /api/auth/refresh` — read `refreshToken` from httpOnly cookie, lookup by hash in DB, check `revokedAt == null && expiresAt > now`. If invalid: 401 `REFRESH_TOKEN_INVALID`. If valid: issue new access token, rotate refresh token (revoke old, store new in DB, set new cookie). Return same shape as login.
-- [ ] **Task 5: Auth module – logout** (AC: 4, 5)
-  - [ ] `POST /api/auth/logout` — read `refreshToken` cookie, set `revokedAt = now` in DB, clear cookie. Return `{ "data": { "success": true } }`. No auth guard required (allow expired access token; cookie is sufficient).
-- [ ] **Task 6: Guards and RBAC** (AC: 2)
-  - [ ] `JwtAuthGuard` at `backend/src/common/guards/jwt-auth.guard.ts`: validate access token from `Authorization: Bearer <token>`, attach `{ id, email, role, branchId }` to `request.user`. Return 401 if missing/invalid/expired.
-  - [ ] `RolesGuard` at `backend/src/common/guards/roles.guard.ts`: check `request.user.role` against `@Roles(...)` metadata.
-  - [ ] `@Roles()` decorator at `backend/src/common/decorators/roles.decorator.ts`.
-  - [ ] `@CurrentUser()` decorator at `backend/src/common/decorators/current-user.decorator.ts`.
-  - [ ] Apply `@UseGuards(JwtAuthGuard, RolesGuard)` + `@Roles('manager')` to all manager-only routes.
-- [ ] **Task 7: Staff management (manager)** (AC: 1, 4)
-  - [ ] `POST /api/users` (manager only): create staff. Hash password with BCrypt (rounds: 10). Reject duplicate email with 409 `EMAIL_ALREADY_EXISTS`. Reject if `role === 'guest'` with 400 `INVALID_ROLE`. Return `{ "data": { id, email, name, role, branchId } }`.
-  - [ ] `GET /api/users` (manager only): list staff. Scope to `branchId` from JWT token (manager sees only their branch). Return `{ "data": [...], "meta": { "total" } }`.
-  - [ ] `PATCH /api/users/:id` (manager only): update `isActive`. On deactivate (`isActive: false`): set `revokedAt = now` on ALL refresh tokens for that user. Existing access tokens remain valid until TTL expires (15 min max window — acceptable).
-- [ ] **Task 8: Login page + role-based redirect** (AC: 2)
-  - [ ] Single login page: `frontend/app/login/page.tsx` (outside route groups so all roles share it).
-  - [ ] On success: store `accessToken` in-memory (React context or module-level variable — NOT localStorage); refresh token is in httpOnly cookie (browser handles it automatically). Redirect by role: `staff` → `/foh-dashboard`, `kitchen` → `/queue`, `manager` → `/analytics`. If route does not exist yet, redirect to `/` as placeholder.
-- [ ] **Task 9: Frontend token refresh interceptor** (AC: 5)
-  - [ ] In `frontend/lib/api-client.ts`: on any 401 response, call `POST /api/auth/refresh` (cookie sent automatically). If refresh succeeds: update in-memory access token, retry original request once. If refresh fails: clear in-memory token, redirect to `/login`.
+- [x] **Task 1: Install dependencies** (all ACs)
+  - [x] `pnpm --filter backend add @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt`
+  - [x] `pnpm --filter backend add -D @types/passport-jwt @types/bcrypt`
+- [x] **Task 2: Prisma – extend User, add RefreshToken** (AC: 4, 5)
+  - [x] Add `isActive Boolean @default(true) @map("is_active")` to `User` model
+  - [x] Add `refreshTokens RefreshToken[]` relation to `User`
+  - [x] Create `RefreshToken` model (see schema below)
+  - [x] Run `npx prisma migrate dev --name add_auth_fields`
+- [x] **Task 3: Auth module – login** (AC: 2, 3)
+  - [x] `POST /api/auth/login` — validate email+password (BCrypt compare). If `isActive === false`: return 401 `INVALID_CREDENTIALS`. If wrong password: return 401 `INVALID_CREDENTIALS`, message exactly `"Invalid email or password."`. If valid: issue access token (JWT, 15 min) + refresh token (UUID, 7 days), store refresh token hash in DB, set refresh token in **httpOnly cookie** (`refreshToken`, `sameSite: strict`, `httpOnly: true`, `secure: process.env.NODE_ENV === 'production'`), return `{ "data": { "accessToken", "expiresIn", "user": { id, email, name, role, branchId } } }` in body.
+- [x] **Task 4: Auth module – refresh** (AC: 5)
+  - [x] `POST /api/auth/refresh` — read `refreshToken` from httpOnly cookie, lookup by hash in DB, check `revokedAt == null && expiresAt > now`. If invalid: 401 `REFRESH_TOKEN_INVALID`. If valid: issue new access token, rotate refresh token (revoke old, store new in DB, set new cookie). Return same shape as login.
+- [x] **Task 5: Auth module – logout** (AC: 4, 5)
+  - [x] `POST /api/auth/logout` — read `refreshToken` cookie, set `revokedAt = now` in DB, clear cookie. Return `{ "data": { "success": true } }`. No auth guard required (allow expired access token; cookie is sufficient).
+- [x] **Task 6: Guards and RBAC** (AC: 2)
+  - [x] `JwtAuthGuard` at `backend/src/common/guards/jwt-auth.guard.ts`: validate access token from `Authorization: Bearer <token>`, attach `{ id, email, role, branchId }` to `request.user`. Return 401 if missing/invalid/expired.
+  - [x] `RolesGuard` at `backend/src/common/guards/roles.guard.ts`: check `request.user.role` against `@Roles(...)` metadata.
+  - [x] `@Roles()` decorator at `backend/src/common/decorators/roles.decorator.ts`.
+  - [x] `@CurrentUser()` decorator at `backend/src/common/decorators/current-user.decorator.ts`.
+  - [x] Apply `@UseGuards(JwtAuthGuard, RolesGuard)` + `@Roles('manager')` to all manager-only routes.
+- [x] **Task 7: Staff management (manager)** (AC: 1, 4)
+  - [x] `POST /api/users` (manager only): create staff. Hash password with BCrypt (rounds: 10). Reject duplicate email with 409 `EMAIL_ALREADY_EXISTS`. Reject if `role === 'guest'` with 400 `INVALID_ROLE`. Return `{ "data": { id, email, name, role, branchId } }`.
+  - [x] `GET /api/users` (manager only): list staff. Scope to `branchId` from JWT token (manager sees only their branch). Return `{ "data": [...], "meta": { "total" } }`.
+  - [x] `PATCH /api/users/:id` (manager only): update `isActive`. On deactivate (`isActive: false`): set `revokedAt = now` on ALL refresh tokens for that user. Existing access tokens remain valid until TTL expires (15 min max window — acceptable).
+- [x] **Task 8: Login page + role-based redirect** (AC: 2)
+  - [x] Single login page: `frontend/app/login/page.tsx` (outside route groups so all roles share it).
+  - [x] On success: store `accessToken` in-memory (React context or module-level variable — NOT localStorage); refresh token is in httpOnly cookie (browser handles it automatically). Redirect by role: `staff` → `/foh-dashboard`, `kitchen` → `/queue`, `manager` → `/analytics`. If route does not exist yet, redirect to `/` as placeholder.
+- [x] **Task 9: Frontend token refresh interceptor** (AC: 5)
+  - [x] In `frontend/lib/api-client.ts`: on any 401 response, call `POST /api/auth/refresh` (cookie sent automatically). If refresh succeeds: update in-memory access token, retry original request once. If refresh fails: clear in-memory token, redirect to `/login`.
 
 ## Developer Context
 
@@ -205,4 +205,59 @@ Users CRUD controller: `backend/src/modules/users/users.controller.ts` + `users.
 
 ### Completion Notes List
 
+- Task 1: Installed @nestjs/jwt, @nestjs/passport, passport, passport-jwt, bcrypt and dev types; added cookie-parser for refresh cookie.
+- Task 2: Extended Prisma User with isActive and refreshTokens relation; added RefreshToken model; migration add_auth_fields applied.
+- Task 3–5: AuthModule with login (200 + httpOnly cookie), refresh (rotate token, new cookie), logout (revoke + clear cookie). E2e: wrong password, inactive user, non-existent email → 401 INVALID_CREDENTIALS; valid login → 200 + Set-Cookie; refresh and logout e2e added.
+- Task 6: JwtStrategy (Bearer token, payload sub/email/role/branchId), JwtAuthGuard, RolesGuard, @Roles(), @CurrentUser(); JWT payload includes email for request.user.
+- Task 7: UsersModule POST/GET/PATCH /api/users (manager only, branch-scoped); e2e for 401/403, INVALID_ROLE, EMAIL_ALREADY_EXISTS, create/list/patch isActive.
+- Task 8: Login page at /login; AuthProvider + auth-store (in-memory token); role redirect staff→/foh-dashboard, kitchen→/queue, manager→/analytics; placeholder pages for those routes.
+- Task 9: api-client doFetch on 401 calls /auth/refresh, updates auth-store, retries once; on refresh fail clears auth and redirects to /login.
+
+**Code Review Fixes (2026-02-26):**
+- H1: JwtModule now uses registerAsync + ConfigService.getOrThrow('JWT_SECRET'); JwtStrategy injects ConfigService — no more hardcoded fallback.
+- H2: Added UpdateIsActiveDto with @IsBoolean() + ValidationPipe(transform:true) — runtime boolean coercion guaranteed.
+- H3: createStaff now validates branchId exists in DB before creating user (BRANCH_NOT_FOUND 400).
+- H4: AuthInitializer component added — on mount, attempts silent POST /auth/refresh if no access token in memory, restoring auth state after page reload.
+- M1: ValidationPipe global (whitelist, transform) added to main.ts; LoginDto and CreateStaffDto with class-validator decorators.
+- M2: updateIsActive now throws NotFoundException (404) instead of BadRequestException (400) for user not found.
+- M3: auth.e2e-spec.ts cleanup scoped to testUserId instead of deleteMany({}) on full table.
+- M4: login/page.tsx now uses apiPost() from api-client instead of raw fetch.
+- M5: POST /api/users has explicit @HttpCode(HttpStatus.CREATED).
+- L1: Removed unused AuthService import from jwt.strategy.ts.
+- L3: Removed unused expiresIn destructure in login/page.tsx.
+
 ### File List
+
+- backend/package.json (auth + cookie-parser deps)
+- backend/prisma/schema.prisma (User.isActive, RefreshToken)
+- backend/prisma/migrations/20260226052526_add_auth_fields/migration.sql
+- backend/src/main.ts (cookieParser)
+- backend/src/app.module.ts (AuthModule, UsersModule)
+- backend/src/modules/auth/auth.module.ts
+- backend/src/modules/auth/auth.controller.ts
+- backend/src/modules/auth/auth.service.ts
+- backend/src/modules/auth/jwt.strategy.ts
+- backend/src/modules/users/users.module.ts
+- backend/src/modules/users/users.controller.ts
+- backend/src/modules/users/users.service.ts
+- backend/src/common/guards/jwt-auth.guard.ts
+- backend/src/common/guards/roles.guard.ts
+- backend/src/common/decorators/roles.decorator.ts
+- backend/src/common/decorators/current-user.decorator.ts
+- backend/test/auth.e2e-spec.ts
+- backend/test/users.e2e-spec.ts
+- frontend/app/layout.tsx (Providers)
+- frontend/app/providers.tsx
+- frontend/app/login/page.tsx
+- frontend/app/(staff)/foh-dashboard/page.tsx
+- frontend/app/(kitchen)/queue/page.tsx
+- frontend/app/(manager)/analytics/page.tsx
+- frontend/contexts/auth-context.tsx
+- frontend/lib/auth-store.ts
+- frontend/lib/api-client.ts
+- backend/prisma/seed.ts (NEW — bootstrap initial manager via prisma db seed)
+- _bmad-output/implementation-artifacts/sprint-status.yaml (5-1 → in-progress then review then done)
+- backend/src/modules/auth/dto/login.dto.ts (NEW)
+- backend/src/modules/users/dto/create-staff.dto.ts (NEW)
+- backend/src/modules/users/dto/update-is-active.dto.ts (NEW)
+- frontend/components/auth-initializer.tsx (NEW — silent refresh on page reload)

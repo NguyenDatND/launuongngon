@@ -1,38 +1,37 @@
-# Test Automation Summary
+# Test Automation Summary (Story 5.1)
 
-**Story:** 1.1 Project Foundation & Core Infrastructure  
-**Generated:** 2026-02-26
+## Generated / Updated Tests
 
-## Generated Tests
+### API / E2E (Backend - Jest + supertest)
+- [x] `backend/test/auth.e2e-spec.ts` – Auth happy path + error cases (login, refresh, logout)
+- [x] `backend/test/users.e2e-spec.ts` – Staff management, RBAC, deactivation behavior, expired JWT handling
 
-### API Tests (Backend)
+## Coverage vs Acceptance Criteria
 
-| Status | File | Description |
-|--------|------|-------------|
-| [x] | `backend/src/modules/health/health.controller.spec.ts` | Unit: HealthController returns `{ data: { status: "ok" } }` |
-| [x] | `backend/test/app.e2e-spec.ts` | E2E: `GET /api/health` → 200 + body; 404 error contract `{ error: { code, message, details } }` |
+- **AC1 – Manager creates staff, staff can log in**
+  - Covered by: `Users (e2e) – allows newly created staff to log in with given credentials`.
 
-### Unit Tests (Existing)
+- **AC2 – Valid login issues JWT + role-based redirect**
+  - Backend issuance + cookie: covered by `Auth (e2e) – valid credentials return accessToken + refresh cookie`.
+  - Frontend redirect: implemented in `frontend/app/login/page.tsx` + `frontend/contexts/auth-context.tsx` (no automated UI tests yet).
 
-| Status | File | Description |
-|--------|------|-------------|
-| [x] | `backend/src/common/filters/http-exception.filter.spec.ts` | HTTP exception filter (5 cases) |
-| [x] | `backend/src/common/redis/redis.service.spec.ts` | RedisService (3 cases) |
-| [x] | `backend/src/common/prisma/prisma.service.spec.ts` | PrismaService (2 cases) |
+- **AC3 – Incorrect password shows "Invalid email or password."**
+  - Covered by: `Auth (e2e) – wrong password / inactive / non-existent email all return INVALID_CREDENTIALS with unified message`.
 
-## Coverage
+- **AC4 – Deactivation invalidates sessions**
+  - Covered by: `Users (e2e) – revokes existing sessions and prevents login after deactivation` (asserts login blocked + refresh cookie invalid after deactivation).
 
-- **API endpoints:** 1/1 covered (health). E2E validates HTTP 200 and response shape; 404 validates global error contract.
-- **UI features:** 0 (frontend has no test framework yet; Story 1.1 scope is backend + scaffold).
+- **AC5 – Access token expires; refresh issues new token or redirects to login**
+  - Backend refresh endpoint: covered by `Auth (e2e) – missing vs valid refresh cookie`.
+  - Backend expired access token behavior: covered by `Users (e2e) – returns 401 for expired access token`.
+  - Frontend auto-refresh + redirect: implemented in `frontend/lib/api-client.ts` + `frontend/lib/auth-store.ts` (not yet covered by browser tests).
 
 ## Commands
 
-- **All backend tests (unit + e2e):** `pnpm --filter backend test` or from root `pnpm test` (13 tests)
-- **Unit only:** `pnpm --filter backend test:unit` (11 tests)
-- **E2e only:** `pnpm --filter backend test:e2e` (2 tests)
+- **Backend E2E:** `pnpm --filter backend test:e2e`
 
 ## Next Steps
 
-- Run `pnpm test` at repo root to execute all backend tests.
-- Add frontend E2E (e.g. Playwright) in a later story when needed.
-- Add more API e2e tests as new endpoints are implemented.
+- Add frontend E2E (Playwright) to cover:
+  - Login form UX (error message display, redirects by role).
+  - End-to-end refresh-on-401 behavior in the browser.
