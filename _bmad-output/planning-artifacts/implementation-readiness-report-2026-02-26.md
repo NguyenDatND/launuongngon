@@ -207,15 +207,32 @@ Validation was performed against create-epics-and-stories best practices: user v
 
 **NEEDS WORK.** PRD, Architecture, UX, and epic/story content are strong and aligned; one structural issue must be resolved before implementation to avoid blocked or rework-heavy sprints.
 
+### Implementation Order & Sprint 1 Scope (action before Sprint Planning)
+
+**Epic 5.1 (Staff Authentication & Role Management)** and **Epic 5.2 (Branch & Table Configuration)** must be delivered **before or in the same sprint as** early Epic 1–3 stories that depend on them. Do one of the following **before** running Sprint Planning:
+
+1. **Option A – Sprint 1 scope (recommended):** Define Sprint 1 as: **1.1 (Foundation), 5.1 (Auth), 5.2 (Branch/Table config)**. Complete 5.1 and 5.2 in Sprint 1 so that 1.2 (Branch Availability), 2.1 (Table QR), 3.x (Host/Staff/Kitchen), and 4.x (Staff bill control) have auth and branch/table data available.
+2. **Option B – Reorder backlog:** In `sprint-status.yaml`, order stories so that 5.1 and 5.2 are the next backlog items after 1.1 (see readiness recommendation below). Then create-story and sprint planning will naturally pick 5.1 and 5.2 for the first sprint.
+
+**Sprint 1 recommended scope (explicit):**
+
+| Order | Story key | Story title |
+|-------|-----------|-------------|
+| 1 | 1-1 | Project Foundation & Core Infrastructure |
+| 2 | 5-1 | Staff Authentication & Role Management |
+| 3 | 5-2 | Branch & Table Configuration |
+
+After Sprint 1, proceed with 1.2, 1.3, … then Epic 2, 3, 4, then 5.3–5.5 (analytics-only).
+
 ### Critical Issues Requiring Immediate Action
 
 1. **Forward dependencies on Epic 5:** Epics 1–4 depend on Epic 5.1 (Staff Authentication) and Epic 5.2 (Branch & Table Configuration). The current backlog order (E1 → E2 → E3 → E4 → E5) means auth and branch/table setup are built last, so booking, QR table, table map, and host/staff flows cannot be fully implemented or tested until Epic 5 is done. This creates a single large batch of dependency and increases risk.
 
 ### Recommended Next Steps
 
-1. **Reorder delivery:** Plan so that Epic 5.1 (Staff Authentication) and Epic 5.2 (Branch & Table Configuration) are implemented first (or in parallel with Epic 1.1). Treat them as "Epic 0" or fold 5.1/5.2 into the first sprint(s) so that Epics 1–4 have auth and branch/table data available when their stories are built.
-2. **Optional doc update:** In `epics.md`, add a short "Implementation order" or "Dependencies" note stating that 5.1 and 5.2 should be completed before (or with) early Epic 1–3 stories, so future readers and sprints follow the same order.
-3. **Sprint planning:** When breaking work into sprints, ensure no Epic 1–4 story that requires staff login or branch/table configuration is scheduled before 5.1 and 5.2 are done.
+1. **Before Sprint Planning:** Apply **Implementation Order & Sprint 1 Scope** above: either adopt Sprint 1 = 1.1, 5.1, 5.2, or reorder `sprint-status.yaml` so 5.1 and 5.2 follow 1.1.
+2. **Doc update:** In `epics.md`, add a short "Implementation order" note stating that 5.1 and 5.2 should be completed before (or with) early Epic 1–3 stories (see epics.md update below).
+3. **When running Sprint Planning:** Ensure 5.1 and 5.2 are included in the first sprint; do not schedule 1.2+ or Epic 2/3/4 stories that require staff login or branch/table config before 5.1 and 5.2 are done.
 
 ### Final Note
 

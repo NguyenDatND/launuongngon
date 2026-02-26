@@ -119,6 +119,8 @@ Authorized staff can adjust bills (add/remove items, apply discounts) with a ful
 Owners and managers configure each branch (tables, zones, opening hours, peak windows) and access chain-level dashboards covering daily revenue, booking vs walk-in split, no-show rates, occupancy heatmaps, and soft flags for repeat no-shows.
 **FRs covered:** FR19, FR20, FR21, FR22
 
+**Implementation order:** Stories **5.1 (Staff Authentication & Role Management)** and **5.2 (Branch & Table Configuration)** have forward dependencies from Epics 1–4 (host login, branch/table data for booking, QR table, table map, staff flows). Complete 5.1 and 5.2 **before or in the same sprint as** early Epic 1–3 stories (e.g. Sprint 1 = 1.1, 5.1, 5.2). See `implementation-readiness-report-*.md` for Sprint 1 scope.
+
 ---
 
 ## Epic 1: Booking & Peak-Hour Check-in
