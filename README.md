@@ -27,7 +27,7 @@ Monorepo for the Lau Nuong Ngon restaurant management system: backend (NestJS + 
 3. Start PostgreSQL and Redis with Docker Compose (run this before `pnpm dev`):
 
    ```bash
-   docker compose up -d
+   docker compose up -d postgres redis
    ```
 
 4. Run database migrations:
@@ -44,6 +44,26 @@ Monorepo for the Lau Nuong Ngon restaurant management system: backend (NestJS + 
 
 - Backend: http://localhost:3001 (API prefix: `/api`)
 - Frontend: http://localhost:3000
+
+## Running with Docker (full stack)
+
+To run the whole stack (PostgreSQL, Redis, backend, frontend) in containers:
+
+```bash
+# Optional: set JWT secret for production-like run
+export JWT_SECRET=your-secret
+docker compose up --build
+```
+
+- Frontend: http://localhost:3000  
+- Backend API: http://localhost:3001/api  
+- Backend runs Prisma migrations on startup. DB and Redis are wired via service names inside the network.
+
+To run only infrastructure (DB + Redis) for local dev, use:
+
+```bash
+docker compose up -d postgres redis
+```
 
 ## Dev commands
 
